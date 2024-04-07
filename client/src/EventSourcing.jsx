@@ -33,31 +33,6 @@ export function EventSourcing() {
         subscribe()
     }, [])
 
-    // const sendNotification = async type => {
-    //     let message
-    //     switch (type) {
-    //         case "info":
-    //             message = "This is an info message."
-    //             break
-    //         case "warning":
-    //             message = "This is a warning message."
-    //             break
-    //         case "error":
-    //             message = "This is an error message."
-    //             break
-    //         default:
-    //             notyf.error("Unknown notification type")
-    //             return
-    //     }
-
-    //     await axios.post("http://localhost:5000/new-messages", {
-    //         message,
-    //         id: Date.now(),
-    //     })
-
-    //     notyf.success("Notification sent")
-    // }
-
     function handleClick(event) {
         setAnchorEl(event.currentTarget)
     }
@@ -96,16 +71,23 @@ export function EventSourcing() {
         })
     }
 
-    function addNewEvent() {
-        setEvents(prev => [
-            ...prev,
-            {
-                title: "New Event",
-                start: new Date(),
-                end: new Date(),
-                allDay: false,
-            },
-        ])
+    const sendNotification = async type => {
+        try {
+            const response = await fetch("http://localhost:5000/trigger-notification", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    type,
+                }),
+            })
+            if (!response.ok) {
+                throw new Error("Failed to send notification")
+            }
+        } catch (error) {
+            console.error(error)
+        }
     }
 
     const open = Boolean(anchorEl)
@@ -170,7 +152,7 @@ export function EventSourcing() {
                     </Box>
                 </Popover>
                 <Box>
-                    <Button onClick={addNewEvent}>Add new event</Button>
+                    <Button onClick={() => sendNotification("info")}>Add new event</Button>
                 </Box>
             </Box>
         </Box>
