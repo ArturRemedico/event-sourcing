@@ -53,4 +53,12 @@ app.post("/trigger-notification", (req, res) => {
     res.status(204).end()
 })
 
+app.post("/trigger-notification-local", (req, res) => {
+    const { type } = req.body
+    const text = type.slice(0, 1).toUpperCase() + type.slice(1)
+    const message = { type, message: `${text} message.`, id: Date.now() }
+    emitter.emit("newMessage", message)
+    res.status(204).end()
+})
+
 app.listen(PORT, () => console.log(`Server started on port ${PORT}`))

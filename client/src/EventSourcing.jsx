@@ -73,7 +73,7 @@ export function EventSourcing() {
 
     const sendNotification = async type => {
         try {
-            const response = await fetch("http://localhost:5000/trigger-notification", {
+            const response = await fetch("http://localhost:5000/trigger-notification-local", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
